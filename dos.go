@@ -1,10 +1,11 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"io"
-	"encoding/binary"
 )
+
 type DOS struct {
 	Magic    uint16
 	CBLP     uint16
@@ -31,7 +32,7 @@ func writereal(dir string, data []byte) (err error) {
 	if err = write(dir+"/raw", data); err != nil {
 		return
 	}
-	if err = write(dir+"/dis", disasm("r",data, 16, 0)); err != nil {
+	if err = write(dir+"/dis", disasm("r", data, 16, 0)); err != nil {
 		return
 	}
 	return hwrite(dir+"/hex", data)
@@ -72,30 +73,30 @@ func WriteDOS(fd io.Writer, dos *DOS, real []byte) (n int, err error) {
 }
 
 func (d DOS) WriteASCII(dir string) (err error) {
-	sprint := func(i interface{}) []byte{
+	sprint := func(i interface{}) []byte {
 		return []byte(fmt.Sprint(i))
 	}
 	pre := dir + "/dos/"
 	t := d
-	write(pre+"/magic",    sprint(t.Magic))
-	write(pre+"/cblp",     sprint(t.CBLP))
-	write(pre+"/cp",       sprint(t.CP))
-	write(pre+"/crlc",     sprint(t.CRLC))
+	write(pre+"/magic", sprint(t.Magic))
+	write(pre+"/cblp", sprint(t.CBLP))
+	write(pre+"/cp", sprint(t.CP))
+	write(pre+"/crlc", sprint(t.CRLC))
 	write(pre+"/cparthdr", sprint(t.CPartHdr))
 	write(pre+"/minalloc", sprint(t.MinAlloc))
 	write(pre+"/maxalloc", sprint(t.MaxAlloc))
-	write(pre+"/ss",       sprint(t.SS))
-	write(pre+"/sp",       sprint(t.SP))
-	write(pre+"/csum",     sprint(t.CSum))
-	write(pre+"/ip",       sprint(t.IP))
-	write(pre+"/cs",       sprint(t.CS))
-	write(pre+"/lfarlo",   sprint(t.LFARLO))
-	write(pre+"/ovno",     sprint(t.OVNO))
-	write(pre+"/res",      sprint(t.Res))
-	write(pre+"/oemid",    sprint(t.OEMID))
-	write(pre+"/oeminfo",  sprint(t.OEMInfo))
-	write(pre+"/res2",     sprint(t.Res2))
-	write(pre+"/lfanew",   sprint(t.LFANew))
+	write(pre+"/ss", sprint(t.SS))
+	write(pre+"/sp", sprint(t.SP))
+	write(pre+"/csum", sprint(t.CSum))
+	write(pre+"/ip", sprint(t.IP))
+	write(pre+"/cs", sprint(t.CS))
+	write(pre+"/lfarlo", sprint(t.LFARLO))
+	write(pre+"/ovno", sprint(t.OVNO))
+	write(pre+"/res", sprint(t.Res))
+	write(pre+"/oemid", sprint(t.OEMID))
+	write(pre+"/oeminfo", sprint(t.OEMInfo))
+	write(pre+"/res2", sprint(t.Res2))
+	write(pre+"/lfanew", sprint(t.LFANew))
 	return
 }
 

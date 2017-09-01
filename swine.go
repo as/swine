@@ -1,12 +1,12 @@
 package main
 
 import (
-	asm "cmd/internal/rsc.io/x86/x86asm"
 	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+	asm "github.com/as/x86/x86asm"
 	"strings"
 )
 import (
@@ -40,7 +40,8 @@ func init() {
 func main() {
 	a := f.Args()
 	if len(a) < 2 {
-		printerr("usage: swine exe dir")
+		printerr("usage: swine exe dstdir")
+		os.Exit(1)
 	}
 	exe := a[0]
 	dir := a[1]
@@ -54,7 +55,6 @@ func main() {
 	os.Exit(0)
 }
 
-
 func disasm(sec string, data []byte, wordsize int, baseaddr int) []byte {
 	buf := new(bytes.Buffer)
 	for i := uint64(baseaddr); len(data) > 0; {
@@ -62,11 +62,10 @@ func disasm(sec string, data []byte, wordsize int, baseaddr int) []byte {
 		if err != nil {
 			//printerr(err)
 		}
-		fmt.Printf("%08x %s\n",i, asm.Plan9Syntax(inst, i, symname))
-		fmt.Fprintf(buf, "%08x %s\n",i, asm.Plan9Syntax(inst, i, symname))
+		fmt.Fprintf(buf, "%08x %s\n", i, asm.Plan9Syntax(inst, i, symname))
 		i += uint64(inst.Len)
 		if sec == ".text" {
-			Execute(data[:inst.Len])
+			//Execute(data[:inst.Len])
 		}
 		data = data[inst.Len:]
 	}
@@ -74,8 +73,8 @@ func disasm(sec string, data []byte, wordsize int, baseaddr int) []byte {
 }
 
 func sections(file string) (section []string) {
-	data, err := ioutil.ReadFile(clean(file+"/section/ORDER"))
-	if err != nil{
+	data, err := ioutil.ReadFile(clean(file + "/section/ORDER"))
+	if err != nil {
 		return nil
 	}
 	for _, v := range strings.Split(string(data), " ") {
@@ -94,4 +93,3 @@ func symname(addr uint64) (s string, n uint64) {
 	}
 	return emu.Symbol(addr)
 }
-

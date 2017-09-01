@@ -1,18 +1,19 @@
 package main
 
-import(
-	"io"
+import (
 	"fmt"
+	"io"
 )
 
 var ZeroByte = []byte{0}
 
 var Dirnames = [...]string{
-	".edata",  ".idata",       ".rsrc",    ".pdata",
-	".cert",   ".reloc",       ".debug",   ".arch",
-	".global", ".tls",         ".loadtbl", ".bound",
-	".import", ".delayimport", ".clr",     ".reserved",
+	".edata", ".idata", ".rsrc", ".pdata",
+	".cert", ".reloc", ".debug", ".arch",
+	".global", ".tls", ".loadtbl", ".bound",
+	".import", ".delayimport", ".clr", ".reserved",
 }
+
 type SectionReader struct {
 	data []byte
 }
@@ -20,6 +21,7 @@ type SectionReader struct {
 type ReaderAt interface {
 	io.ReaderAt
 }
+
 func NewSectionReader(d []byte) *SectionReader {
 	return &SectionReader{d}
 }

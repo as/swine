@@ -1,12 +1,14 @@
 package main
+
 import (
-	"fmt"
-	"path/filepath"
-	"os"
 	"encoding/hex"
+	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strconv"
 )
+
 func align(n, a uint32) uint32 {
 	if a == 0 {
 		printerr("warning: file alignment was zero")
@@ -22,7 +24,7 @@ func clean(dir string) string {
 }
 func dirof(file string) string {
 	file = clean(file)
-	printerr("dirof:",file,"=",filepath.Dir(file))
+	printerr("dirof:", file, "=", filepath.Dir(file))
 	return filepath.Dir(file)
 }
 func fatal(v interface{}) {
@@ -35,7 +37,7 @@ func hwrite(name string, data []byte) error {
 }
 func mkdir(dir string) error {
 	err := os.MkdirAll(clean(dir), 0777)
-	if err != nil{
+	if err != nil {
 		printerr(err)
 		os.Exit(1)
 	}

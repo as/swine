@@ -1,11 +1,12 @@
 package main
-import(
-	"os"
-	"fmt"
-	"debug/pe"
-	"io/ioutil"
-	"encoding/binary"
+
+import (
 	"bytes"
+	"debug/pe"
+	"encoding/binary"
+	"fmt"
+	"io/ioutil"
+	"os"
 )
 
 func dos2fs(dir string, exe string) (err error) {
@@ -27,8 +28,8 @@ func dos2fs(dir string, exe string) (err error) {
 
 func exe2fs(dir string, exe string) {
 	var (
-		wordsize int
-		base int
+		wordsize   int
+		base       int
 		codeoffset int
 		dataoffset int
 	)
@@ -51,52 +52,52 @@ func exe2fs(dir string, exe string) {
 	mkdir(pre)
 
 	hdr := fd.FileHeader
-	write(pre+"/machine",    ascii(hdr.Machine))
+	write(pre+"/machine", ascii(hdr.Machine))
 	write(pre+"/nosections", ascii(hdr.NumberOfSections))
-	write(pre+"/timestamp",  ascii(hdr.TimeDateStamp))
-	write(pre+"/symtabptr",  ascii(hdr.PointerToSymbolTable))
-	write(pre+"/nosymbols",  ascii(hdr.NumberOfSymbols))
+	write(pre+"/timestamp", ascii(hdr.TimeDateStamp))
+	write(pre+"/symtabptr", ascii(hdr.PointerToSymbolTable))
+	write(pre+"/nosymbols", ascii(hdr.NumberOfSymbols))
 	write(pre+"/opthdrsize", ascii(hdr.SizeOfOptionalHeader))
-	write(pre+"/character",  ascii(hdr.Characteristics))
+	write(pre+"/character", ascii(hdr.Characteristics))
 
 	switch t := fd.OptionalHeader.(type) {
 	case *pe.OptionalHeader32:
 		pre := clean(dir + "/opthdr32")
 		mkdir(pre)
-		base       = int(t.ImageBase)
+		base = int(t.ImageBase)
 		codeoffset = int(t.BaseOfCode)
 		dataoffset = int(t.BaseOfData)
 
-		write(pre+"/magic",                 ascii(t.Magic))
-		write(pre+"/version/linker/maj",    ascii(t.MajorLinkerVersion))
-		write(pre+"/version/linker/min",    ascii(t.MinorLinkerVersion))
-		write(pre+"/version/os/maj",        ascii(t.MajorOperatingSystemVersion))
-		write(pre+"/version/os/min",        ascii(t.MinorOperatingSystemVersion))
-		write(pre+"/version/image/maj",     ascii(t.MajorImageVersion))
-		write(pre+"/version/image/min",     ascii(t.MinorImageVersion))
+		write(pre+"/magic", ascii(t.Magic))
+		write(pre+"/version/linker/maj", ascii(t.MajorLinkerVersion))
+		write(pre+"/version/linker/min", ascii(t.MinorLinkerVersion))
+		write(pre+"/version/os/maj", ascii(t.MajorOperatingSystemVersion))
+		write(pre+"/version/os/min", ascii(t.MinorOperatingSystemVersion))
+		write(pre+"/version/image/maj", ascii(t.MajorImageVersion))
+		write(pre+"/version/image/min", ascii(t.MinorImageVersion))
 		write(pre+"/version/subsystem/maj", ascii(t.MajorSubsystemVersion))
 		write(pre+"/version/subsystem/min", ascii(t.MinorSubsystemVersion))
-		write(pre+"/version/win32",         ascii(t.Win32VersionValue))
-		write(pre+"/size/stackreserve",     ascii(t.SizeOfStackReserve))
-		write(pre+"/size/stackcommit",      ascii(t.SizeOfStackCommit))
-		write(pre+"/size/heapreserve",      ascii(t.SizeOfHeapReserve))
-		write(pre+"/size/heapcommit",       ascii(t.SizeOfHeapCommit))
-		write(pre+"/size/image",            ascii(t.SizeOfImage))
-		write(pre+"/size/headers",          ascii(t.SizeOfHeaders))
-		write(pre+"/size/code",             ascii(t.SizeOfCode))
-		write(pre+"/size/initdata",         ascii(t.SizeOfInitializedData))
-		write(pre+"/size/uninitdata",       ascii(t.SizeOfUninitializedData))
-		write(pre+"/addr/main",             ascii(t.AddressOfEntryPoint))
-		write(pre+"/addr/basecode",         ascii(t.BaseOfCode))
-		write(pre+"/addr/basedata",         ascii(t.BaseOfData))
-		write(pre+"/addr/baseimage",        ascii(t.ImageBase))
-		write(pre+"/align/section",         ascii(t.SectionAlignment))
-		write(pre+"/align/file",            ascii(t.FileAlignment))
-		write(pre+"/crc",                   ascii(t.CheckSum))
-		write(pre+"/subsystem",             ascii(t.Subsystem))
-		write(pre+"/dllcharacter",          ascii(t.DllCharacteristics))
-		write(pre+"/loaderflags",           ascii(t.LoaderFlags))
-		write(pre+"/norvasizes",            ascii(t.NumberOfRvaAndSizes))
+		write(pre+"/version/win32", ascii(t.Win32VersionValue))
+		write(pre+"/size/stackreserve", ascii(t.SizeOfStackReserve))
+		write(pre+"/size/stackcommit", ascii(t.SizeOfStackCommit))
+		write(pre+"/size/heapreserve", ascii(t.SizeOfHeapReserve))
+		write(pre+"/size/heapcommit", ascii(t.SizeOfHeapCommit))
+		write(pre+"/size/image", ascii(t.SizeOfImage))
+		write(pre+"/size/headers", ascii(t.SizeOfHeaders))
+		write(pre+"/size/code", ascii(t.SizeOfCode))
+		write(pre+"/size/initdata", ascii(t.SizeOfInitializedData))
+		write(pre+"/size/uninitdata", ascii(t.SizeOfUninitializedData))
+		write(pre+"/addr/main", ascii(t.AddressOfEntryPoint))
+		write(pre+"/addr/basecode", ascii(t.BaseOfCode))
+		write(pre+"/addr/basedata", ascii(t.BaseOfData))
+		write(pre+"/addr/baseimage", ascii(t.ImageBase))
+		write(pre+"/align/section", ascii(t.SectionAlignment))
+		write(pre+"/align/file", ascii(t.FileAlignment))
+		write(pre+"/crc", ascii(t.CheckSum))
+		write(pre+"/subsystem", ascii(t.Subsystem))
+		write(pre+"/dllcharacter", ascii(t.DllCharacteristics))
+		write(pre+"/loaderflags", ascii(t.LoaderFlags))
+		write(pre+"/norvasizes", ascii(t.NumberOfRvaAndSizes))
 		for i, t := range t.DataDirectory {
 			name := fmt.Sprint(i)
 			if i < len(Dirnames) {
@@ -105,44 +106,44 @@ func exe2fs(dir string, exe string) {
 			dir := clean(pre + "/data/" + name)
 			mkdir(dir)
 			write(dir+"/offset", ascii(t.VirtualAddress))
-			write(dir+"/size",   ascii(t.Size))
+			write(dir+"/size", ascii(t.Size))
 		}
 		wordsize = 32
 	case *pe.OptionalHeader64:
 		wordsize = 64
-		base       = int(t.ImageBase)
+		base = int(t.ImageBase)
 		codeoffset = int(t.BaseOfCode)
 		pre := clean(dir + "/opthdr64")
 		mkdir(pre)
-		write(pre+"/magic",                 ascii(t.Magic))
-		write(pre+"/version/linker/maj",    ascii(t.MajorLinkerVersion))
-		write(pre+"/version/linker/min",    ascii(t.MinorLinkerVersion))
-		write(pre+"/version/os/maj",        ascii(t.MajorOperatingSystemVersion))
-		write(pre+"/version/os/min",        ascii(t.MinorOperatingSystemVersion))
-		write(pre+"/version/image/maj",     ascii(t.MajorImageVersion))
-		write(pre+"/version/image/min",     ascii(t.MinorImageVersion))
+		write(pre+"/magic", ascii(t.Magic))
+		write(pre+"/version/linker/maj", ascii(t.MajorLinkerVersion))
+		write(pre+"/version/linker/min", ascii(t.MinorLinkerVersion))
+		write(pre+"/version/os/maj", ascii(t.MajorOperatingSystemVersion))
+		write(pre+"/version/os/min", ascii(t.MinorOperatingSystemVersion))
+		write(pre+"/version/image/maj", ascii(t.MajorImageVersion))
+		write(pre+"/version/image/min", ascii(t.MinorImageVersion))
 		write(pre+"/version/subsystem/maj", ascii(t.MajorSubsystemVersion))
 		write(pre+"/version/subsystem/min", ascii(t.MinorSubsystemVersion))
-		write(pre+"/version/win32",         ascii(t.Win32VersionValue))
-		write(pre+"/size/stackreserve",     ascii(t.SizeOfStackReserve))
-		write(pre+"/size/stackcommit",      ascii(t.SizeOfStackCommit))
-		write(pre+"/size/heapreserve",      ascii(t.SizeOfHeapReserve))
-		write(pre+"/size/heapcommit",       ascii(t.SizeOfHeapCommit))
-		write(pre+"/size/image",            ascii(t.SizeOfImage))
-		write(pre+"/size/headers",          ascii(t.SizeOfHeaders))
-		write(pre+"/size/code",             ascii(t.SizeOfCode))
-		write(pre+"/size/initdata",         ascii(t.SizeOfInitializedData))
-		write(pre+"/size/uninitdata",       ascii(t.SizeOfUninitializedData))
-		write(pre+"/addr/main",             ascii(t.AddressOfEntryPoint))
-		write(pre+"/addr/basecode",         ascii(t.BaseOfCode))
-		write(pre+"/addr/baseimage",        ascii(t.ImageBase))
-		write(pre+"/align/section",         ascii(t.SectionAlignment))
-		write(pre+"/align/file",            ascii(t.FileAlignment))
-		write(pre+"/crc",                   ascii(t.CheckSum))
-		write(pre+"/subsystem",             ascii(t.Subsystem))
-		write(pre+"/dllcharacter",          ascii(t.DllCharacteristics))
-		write(pre+"/loaderflags",           ascii(t.LoaderFlags))
-		write(pre+"/norvasizes",            ascii(t.NumberOfRvaAndSizes))
+		write(pre+"/version/win32", ascii(t.Win32VersionValue))
+		write(pre+"/size/stackreserve", ascii(t.SizeOfStackReserve))
+		write(pre+"/size/stackcommit", ascii(t.SizeOfStackCommit))
+		write(pre+"/size/heapreserve", ascii(t.SizeOfHeapReserve))
+		write(pre+"/size/heapcommit", ascii(t.SizeOfHeapCommit))
+		write(pre+"/size/image", ascii(t.SizeOfImage))
+		write(pre+"/size/headers", ascii(t.SizeOfHeaders))
+		write(pre+"/size/code", ascii(t.SizeOfCode))
+		write(pre+"/size/initdata", ascii(t.SizeOfInitializedData))
+		write(pre+"/size/uninitdata", ascii(t.SizeOfUninitializedData))
+		write(pre+"/addr/main", ascii(t.AddressOfEntryPoint))
+		write(pre+"/addr/basecode", ascii(t.BaseOfCode))
+		write(pre+"/addr/baseimage", ascii(t.ImageBase))
+		write(pre+"/align/section", ascii(t.SectionAlignment))
+		write(pre+"/align/file", ascii(t.FileAlignment))
+		write(pre+"/crc", ascii(t.CheckSum))
+		write(pre+"/subsystem", ascii(t.Subsystem))
+		write(pre+"/dllcharacter", ascii(t.DllCharacteristics))
+		write(pre+"/loaderflags", ascii(t.LoaderFlags))
+		write(pre+"/norvasizes", ascii(t.NumberOfRvaAndSizes))
 		for i, t := range t.DataDirectory {
 			name := fmt.Sprint(i)
 			if i < len(Dirnames) {
@@ -151,28 +152,28 @@ func exe2fs(dir string, exe string) {
 			dir := clean(pre + "/data/" + name)
 			mkdir(dir)
 			write(dir+"/offset", ascii(t.VirtualAddress))
-			write(dir+"/size",   ascii(t.Size))
+			write(dir+"/size", ascii(t.Size))
 		}
 	}
 
-	mkdir(dir+"/section")
+	mkdir(dir + "/section")
 	order := ""
 	for _, t := range fd.Sections {
 		order += t.Name + " "
 		pre := clean(dir + "/section/" + t.Name)
 		mkdir(pre)
-		write(pre+"/virtualsize",   ascii(t.VirtualSize))
-		write(pre+"/virtualaddr",   ascii(t.VirtualAddress))
-		write(pre+"/size",          ascii(t.Size))
-		write(pre+"/offset",        ascii(t.Offset))
-		write(pre+"/relocations",   ascii(t.PointerToRelocations))
-		write(pre+"/lines",         ascii(t.PointerToLineNumbers))
+		write(pre+"/virtualsize", ascii(t.VirtualSize))
+		write(pre+"/virtualaddr", ascii(t.VirtualAddress))
+		write(pre+"/size", ascii(t.Size))
+		write(pre+"/offset", ascii(t.Offset))
+		write(pre+"/relocations", ascii(t.PointerToRelocations))
+		write(pre+"/lines", ascii(t.PointerToLineNumbers))
 		write(pre+"/norelocations", ascii(t.NumberOfRelocations))
-		write(pre+"/nolines",       ascii(t.NumberOfLineNumbers))
-		write(pre+"/character",     ascii(t.Characteristics))
+		write(pre+"/nolines", ascii(t.NumberOfLineNumbers))
+		write(pre+"/character", ascii(t.Characteristics))
 		data, _ := t.Data()
 		write(pre+"/data/raw", data)
-		write(pre+"/data/dis", disasm(t.Name,data, wordsize, base+codeoffset))
+		write(pre+"/data/dis", disasm(t.Name, data, wordsize, base+codeoffset))
 		hwrite(pre+"/data/hex", data)
 	}
 	write(dir+"/section/ORDER", []byte(order))
@@ -180,9 +181,9 @@ func exe2fs(dir string, exe string) {
 	for _, t := range fd.Symbols {
 		pre := dir + "/symbol/" + t.Name
 		mkdir(pre)
-		write(pre+"/value",        ascii(t.Value))
-		write(pre+"/section",      ascii(t.SectionNumber))
-		write(pre+"/type",         ascii(t.Type))
+		write(pre+"/value", ascii(t.Value))
+		write(pre+"/section", ascii(t.SectionNumber))
+		write(pre+"/type", ascii(t.Type))
 		write(pre+"/storageclass", ascii(t.StorageClass))
 	}
 }
@@ -305,7 +306,7 @@ func fs2exe(exe string, dir string) {
 		}
 		fd.OptionalHeader = t
 	}
-	
+
 	ordered := sections(dir)
 	for _, v := range ordered {
 		if v == "" {
